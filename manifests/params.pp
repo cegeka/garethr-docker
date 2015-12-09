@@ -50,6 +50,7 @@ class docker::params {
   $storage_auto_extend_pool          = undef
   $storage_pool_autoextend_threshold = undef
   $storage_pool_autoextend_percent   = undef
+  $use_subscription_manager          = undef
 
   case $::osfamily {
     'Debian' : {
@@ -131,23 +132,25 @@ class docker::params {
       }
 
       # repo_opt to specify install_options for docker package
-      if (versioncmp($::operatingsystemmajrelease, '7') == 0) {
-        if $::operatingsystem == 'RedHat' {
-          $repo_opt = '--enablerepo=rhel7-extras'
-        } elsif $::operatingsystem == 'CentOS' {
-          $repo_opt = '--enablerepo=extras'
-        } elsif $::operatingsystem == 'OracleLinux' {
-          $repo_opt = '--enablerepo=ol7_addons'
-        } elsif $::operatingsystem == 'Scientific' {
-          $repo_opt = '--enablerepo=sl-extras'
+      if ($use_subscription_manager){
+        if (versioncmp($::operatingsystemmajrelease, '7') == 0) {
+          if $::operatingsystem == 'RedHat' {
+            $repo_opt = '--enablerepo=rhel7-extras'
+          } elsif $::operatingsystem == 'CentOS' {
+            $repo_opt = '--enablerepo=extras'
+          } elsif $::operatingsystem == 'OracleLinux' {
+            $repo_opt = '--enablerepo=ol7_addons'
+          } elsif $::operatingsystem == 'Scientific' {
+            $repo_opt = '--enablerepo=sl-extras'
+          } else {
+            $repo_opt = undef
+          }
+        } elsif (versioncmp($::operatingsystemrelease, '7.0') < 0 and $::operatingsystem == 'OracleLinux') {
+            # FIXME is 'public_ol6_addons' available on all OL6 installs?
+            $repo_opt = '--enablerepo=public_ol6_addons,public_ol6_latest'
         } else {
           $repo_opt = undef
         }
-      } elsif (versioncmp($::operatingsystemrelease, '7.0') < 0 and $::operatingsystem == 'OracleLinux') {
-          # FIXME is 'public_ol6_addons' available on all OL6 installs?
-          $repo_opt = '--enablerepo=public_ol6_addons,public_ol6_latest'
-      } else {
-        $repo_opt = undef
       }
       if $::kernelversion == '2.6.32' {
         $nowarn_kernel = true
