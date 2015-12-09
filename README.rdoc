@@ -1,0 +1,5 @@
+= puppet-docker module
+
+{<img src='https://codex.cegeka.be/jenkins/job/puppet-docker/badge/icon' />}[https://codex.cegeka.be/jenkins/job/puppet-docker/]
+
+This is the docker module.
