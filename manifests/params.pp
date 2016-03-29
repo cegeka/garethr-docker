@@ -51,6 +51,7 @@ class docker::params {
   $storage_pool_autoextend_threshold = undef
   $storage_pool_autoextend_percent   = undef
   $use_subscription_manager          = undef
+  $create_user                       = true
 
   case $::osfamily {
     'Debian' : {

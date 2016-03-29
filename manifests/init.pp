@@ -296,6 +296,7 @@ class docker(
   $storage_pool_autoextend_threshold = $docker::params::storage_pool_autoextend_threshold,
   $storage_pool_autoextend_percent   = $docker::params::storage_pool_autoextend_percent,
   $use_subscription_manager          = $docker::params::use_subscription_manager,
+  $create_user                       = $docker::params::create_user,
 ) inherits docker::params {
 
   validate_string($version)
