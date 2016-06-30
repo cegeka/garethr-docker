@@ -100,7 +100,7 @@ class docker::params {
         $manage_epel = false
       } else {
         $package_name = $package_name_default
-        $use_upstream_package_source = false
+        $use_upstream_package_source = true
         $manage_epel = false
       }
       $package_key_source = 'https://yum.dockerproject.org/gpg'
