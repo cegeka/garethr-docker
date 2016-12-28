@@ -5,9 +5,10 @@
 # and Archlinux based distributions.
 #
 class docker::install {
+  $docker_command = $docker::docker_command
   validate_string($docker::version)
-  validate_re($::osfamily, '^(Debian|RedHat|Archlinux)$', 'This module only works on Debian, Red Hat and Archlinux based systems.')
-  validate_string($::kernelrelease)
+  validate_re($::osfamily, '^(Debian|RedHat|Archlinux|Gentoo)$',
+              'This module only works on Debian or Red Hat based systems or on Archlinux as on Gentoo.')
   validate_bool($docker::use_upstream_package_source)
 
   if $docker::version and $docker::ensure != 'absent' {
@@ -55,6 +56,10 @@ class docker::install {
         }
       }
     }
+    'Gentoo': {
+      $manage_kernel = false
+    }
+    default: {}
   }
 
   if $manage_kernel {
@@ -67,17 +72,41 @@ class docker::install {
   }
 
   if $docker::manage_package {
-    if $docker::repo_opt {
-      package { 'docker':
-        ensure          => $ensure,
-        name            => $docker::package_name,
-        install_options => $docker::repo_opt,
-      }
+
+    if empty($docker::repo_opt) {
+      $docker_hash = {}
     } else {
-        package { 'docker':
-          ensure => $ensure,
-          name   => $docker::package_name,
+      $docker_hash = { 'install_options' => $docker::repo_opt }
+    }
+
+    if $docker::package_source {
+      case $::osfamily {
+        'Debian' : {
+          $pk_provider = 'dpkg'
         }
+        'RedHat' : {
+          $pk_provider = 'rpm'
+        }
+        'Gentoo' : {
+          $pk_provider = 'portage'
+        }
+        default : {
+          $pk_provider = undef
+        }
+      }
+
+      ensure_resource('package', 'docker', merge($docker_hash, {
+        ensure   => $ensure,
+        provider => $pk_provider,
+        source   => $docker::package_source,
+        name     => $docker::package_name,
+      }))
+
+    } else {
+      ensure_resource('package', 'docker', merge($docker_hash, {
+        ensure => $ensure,
+        name   => $docker::package_name,
+      }))
     }
   }
 }

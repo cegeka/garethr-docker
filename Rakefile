@@ -9,3 +9,4 @@ desc "Default task prints the available targets."
 task :default do
   sh %{rake -T}
 end
+
