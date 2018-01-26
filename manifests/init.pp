@@ -428,9 +428,11 @@ class docker(
   validate_bool($ip_forward)
   validate_bool($iptables)
   validate_bool($ip_masq)
-  validate_bool($selinux_enabled)
   if $icc != undef {
     validate_bool($icc)
+  }
+  if $selinux_enabled != undef {
+      validate_bool($selinux_enabled)
   }
   validate_string($bridge)
   validate_string($fixed_cidr)
