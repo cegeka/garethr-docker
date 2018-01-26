@@ -428,6 +428,7 @@ class docker(
   validate_bool($ip_forward)
   validate_bool($iptables)
   validate_bool($ip_masq)
+  validate_bool($selinux_enabled)
   if $icc != undef {
     validate_bool($icc)
   }
@@ -447,10 +448,6 @@ class docker(
   if $log_driver {
     validate_re($log_driver, '^(none|json-file|syslog|journald|gelf|fluentd|splunk)$',
                 'log_driver must be one of none, json-file, syslog, journald, gelf, fluentd or splunk')
-  }
-
-  if $selinux_enabled {
-    validate_re($selinux_enabled, '^(true|false)$', 'selinux_enabled must be true or false')
   }
 
   if $storage_driver {
