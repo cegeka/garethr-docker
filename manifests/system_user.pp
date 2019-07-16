@@ -11,10 +11,7 @@ define docker::system_user (
 
   include docker::params
 
-  if $create_user {
-    ensure_resource('user', $name, {'ensure' => 'present' })
-    User[$name] -> Exec["docker-system-user-${name}"]
-  }
+  User[$name] -> Exec["docker-system-user-${name}"]
 
   exec { "docker-system-user-${name}":
     command => "/usr/sbin/usermod -aG ${docker::params::docker_group} ${name}",
