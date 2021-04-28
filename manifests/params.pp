@@ -21,7 +21,7 @@ class docker::params {
   $fixed_cidr                        = undef
   $bridge                            = undef
   $default_gateway                   = undef
-  $socket_bind                       = 'unix:///var/run/docker.sock'
+  $socket_bind                       = undef
   $log_level                         = undef
   $log_driver                        = undef
   $log_opt                           = []
